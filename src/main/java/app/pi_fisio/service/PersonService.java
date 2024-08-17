@@ -1,6 +1,7 @@
 package app.pi_fisio.service;
 
 import app.pi_fisio.dto.PersonDTO;
+import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.Person;
 import app.pi_fisio.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ public class PersonService {
     public PersonDTO create(PersonDTO personDTO) {
         try {
             Person person = new Person(personDTO);
+            // fazendo assim pq n ta fazendo automatico ;-;
+            for(JointIntensity jointIntensity: person.getJointIntensities() ){
+                jointIntensity.setPerson(person);
+            }
+
             return new PersonDTO(personRepository.save(person));
         }catch(Exception e){
             throw new RuntimeException("Unable to create person", e);

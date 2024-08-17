@@ -1,6 +1,6 @@
 package app.pi_fisio.entity;
 
-public enum PainIntensity {
+public enum Intensity {
     LOW,
     MEDIUM,
     HIGH

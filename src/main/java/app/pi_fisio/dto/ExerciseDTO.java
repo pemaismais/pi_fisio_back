@@ -3,7 +3,7 @@ package app.pi_fisio.dto;
 
 import app.pi_fisio.entity.Exercise;
 import app.pi_fisio.entity.Joint;
-import app.pi_fisio.entity.PainIntensity;
+import app.pi_fisio.entity.Intensity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +20,11 @@ public class ExerciseDTO {
         BeanUtils.copyProperties(exercise,this);
     }
 
-    Long id;
-    String name;
-    String description;
-    String reps;
-    String videoUrl;
-    Joint joint;
-    PainIntensity painIntensity;
+    private Long id;
+    private String name;
+    private String description;
+    private String reps;
+    private String videoUrl;
+    private Joint joint;
+    private Intensity intensity;
 }

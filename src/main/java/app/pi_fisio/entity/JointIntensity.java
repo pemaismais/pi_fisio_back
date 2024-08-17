@@ -1,34 +1,23 @@
 package app.pi_fisio.entity;
 
-
-import app.pi_fisio.dto.ExerciseDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
-public class Exercise {
+public class JointIntensity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    @NotNull
-    private String name;
-
-    @NotNull
-    private String description;
-
-    private String reps;
-    private String videoUrl;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -38,7 +27,8 @@ public class Exercise {
     @NotNull
     private Intensity intensity;
 
-    public Exercise(ExerciseDTO exerciseDTO){
-        BeanUtils.copyProperties(exerciseDTO,this);
-    }
+    @ManyToOne
+    @JoinColumn(name = "person_id", nullable = false)
+    @JsonBackReference
+    private Person person;
 }
