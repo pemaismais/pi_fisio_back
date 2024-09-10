@@ -5,6 +5,7 @@ import app.pi_fisio.dto.PersonDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class Person {
     @NotNull
     // yyyy-mm-dd
     private LocalDate birthDate;
+
+    @Email
+    @NotNull
+    private String email;
 
     private String course;
 

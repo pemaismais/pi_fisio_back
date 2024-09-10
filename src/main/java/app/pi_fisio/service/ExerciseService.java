@@ -98,7 +98,7 @@ public class ExerciseService {
 
         // Verificar se a lista de intensidades articulares está vazia
         if (jointIntensities == null || jointIntensities.isEmpty()) {
-            throw new NoSuchElementException("Person with no jointIntensities with id " + personId);
+            throw new NoSuchElementException("Person with no jointIntensities.");
         }
 
         // Coletar todos os exercícios correspondentes às intensidades articulares
