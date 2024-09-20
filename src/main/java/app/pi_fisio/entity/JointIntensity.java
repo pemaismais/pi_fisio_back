@@ -28,7 +28,7 @@ public class JointIntensity {
     private Intensity intensity;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
-    private Person person;
+    private User user;
 }

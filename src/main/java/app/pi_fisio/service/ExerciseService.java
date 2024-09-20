@@ -3,7 +3,7 @@ package app.pi_fisio.service;
 import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.entity.*;
 import app.pi_fisio.repository.ExerciseRepository;
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class ExerciseService {
     @Autowired
     ExerciseRepository exerciseRepository;
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
     public ExerciseDTO create(ExerciseDTO exerciseDTO) {
         try {
@@ -90,14 +90,14 @@ public class ExerciseService {
 
     public List<ExerciseDTO> findByPerson(Long personId) {
         // Buscar a pessoa pelo ID e lançar exceção se não for encontrada
-        Person person = personRepository.findById(personId)
-                .orElseThrow(() -> new NoSuchElementException("Could not find the person with id " + personId));
+        User user = userRepository.findById(personId)
+                .orElseThrow(() -> new NoSuchElementException("Could not find the user with id " + personId));
 
-        List<JointIntensity> jointIntensities = person.getJointIntensities();
+        List<JointIntensity> jointIntensities = user.getJointIntensities();
 
         // Verificar se a lista de intensidades articulares está vazia
         if (jointIntensities == null || jointIntensities.isEmpty()) {
-            throw new NoSuchElementException("Person with no jointIntensities.");
+            throw new NoSuchElementException("User with no jointIntensities.");
         }
 
         // Coletar todos os exercícios correspondentes às intensidades articulares

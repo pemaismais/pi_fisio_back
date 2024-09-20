@@ -1,8 +1,8 @@
 package app.pi_fisio.dto;
 
 import app.pi_fisio.entity.JointIntensity;
-import app.pi_fisio.entity.Person;
-import app.pi_fisio.entity.PersonRole;
+import app.pi_fisio.entity.User;
+import app.pi_fisio.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,15 +15,15 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonDTO {
+public class UserDTO {
         private Long id;
         private String name;
         private String email;
-        private PersonRole role;
+        private UserRole role;
         private String course;
         private List<JointIntensity> jointIntensities;
         
-        public PersonDTO(Person person){
-                BeanUtils.copyProperties(person, this);
+        public UserDTO(User user){
+                BeanUtils.copyProperties(user, this);
         }
 }

@@ -1,5 +1,7 @@
-package app.pi_fisio.auth;
+package app.pi_fisio.controller;
 
+import app.pi_fisio.dto.LoginDTO;
+import app.pi_fisio.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,7 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping
-    public ResponseEntity<String> loginWithGoogle(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> loginWithGoogle(@RequestBody LoginDTO request) {
         try {
             String idTokenString = request.getIdToken();
             return ResponseEntity.ok(loginService.loginWithGoogle(idTokenString));

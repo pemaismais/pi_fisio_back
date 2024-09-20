@@ -1,7 +1,7 @@
 package app.pi_fisio.entity;
 
 
-import app.pi_fisio.dto.PersonDTO;
+import app.pi_fisio.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -12,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,10 +19,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Builder
+
 @Entity
-public class Person implements UserDetails {
+@Table(name = "Users")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,15 +38,15 @@ public class Person implements UserDetails {
     @NotNull
     // UserDetails -> username
     private String email;
-    private PersonRole role;
+    private UserRole role;
     private String course;
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<JointIntensity> jointIntensities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == PersonRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
@@ -86,7 +86,7 @@ public class Person implements UserDetails {
         return true;
     }
 
-    public Person(PersonDTO personDTO){
-        BeanUtils.copyProperties(personDTO, this);
+    public User(UserDTO userDTO){
+        BeanUtils.copyProperties(userDTO, this);
     }
 }

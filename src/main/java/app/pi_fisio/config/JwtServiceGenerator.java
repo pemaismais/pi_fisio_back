@@ -2,7 +2,7 @@ package app.pi_fisio.config;
 
 //JwtService.java
 
-import app.pi_fisio.entity.Person;
+import app.pi_fisio.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Service
 public class JwtServiceGenerator {
 
-    public String generateToken(Person userDetails) {
+    public String generateToken(User userDetails) {
 
         //AQUI VOCÊ PODE COLOCAR O QUE MAIS VAI COMPOR O PAYLOAD DO TOKEN
         Map<String, Object> extraClaims = new HashMap<>();

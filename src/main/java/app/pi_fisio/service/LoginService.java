@@ -1,10 +1,10 @@
 //AuthenticationService.java
-package app.pi_fisio.auth;
+package app.pi_fisio.service;
 
 import app.pi_fisio.config.JwtServiceGenerator;
-import app.pi_fisio.entity.Person;
-import app.pi_fisio.entity.PersonRole;
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.entity.User;
+import app.pi_fisio.entity.UserRole;
+import app.pi_fisio.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -30,7 +30,7 @@ public class LoginService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
     public String loginWithGoogle(String idTokenString) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
@@ -48,20 +48,20 @@ public class LoginService {
             String name = (String) payload.get("name");
 
             // Use or store profile information
-            Optional<Person> optionalPerson = personRepository.findByEmail(email);
+            Optional<User> optionalPerson = userRepository.findByEmail(email);
             if (optionalPerson.isPresent()) {
                 // Se encontrado no banco de dados
                 return jwtService.generateToken(optionalPerson.get());
             } else {
                 // Se não encontrado no banco de dados
-                Person person = Person.builder()
+                User user = User.builder()
                         .userId(passwordEncoder.encode(userId))
                         .email(email)
                         .name(name)
-                        .role(PersonRole.USER)
+                        .role(UserRole.USER)
                         .build();
-                personRepository.save(person);
-                return jwtService.generateToken(person);
+                userRepository.save(user);
+                return jwtService.generateToken(user);
             }
 
         } else {

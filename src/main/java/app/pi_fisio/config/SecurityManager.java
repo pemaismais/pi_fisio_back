@@ -1,6 +1,6 @@
 package app.pi_fisio.config;
 
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityManager {
     @Autowired
-    private PersonRepository personRepository;
+    private UserRepository userRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,7 +41,7 @@ public class SecurityManager {
     public UserDetailsService userDetailsService() {
 //        return username -> loginRepository.findByUsername(username)
 //                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-        return username -> personRepository.findByEmail(username)
+        return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
 

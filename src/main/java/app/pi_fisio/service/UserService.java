@@ -1,72 +1,72 @@
 package app.pi_fisio.service;
 
-import app.pi_fisio.dto.PersonDTO;
+import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.entity.JointIntensity;
-import app.pi_fisio.entity.Person;
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.entity.User;
+import app.pi_fisio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PersonService {
+public class UserService {
 
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
-    public PersonDTO create(PersonDTO personDTO) {
+    public UserDTO create(UserDTO userDTO) {
         try {
-            Person person = new Person(personDTO);
+            User user = new User(userDTO);
             // fazendo assim pq n ta fazendo automatico ;-;
-            for (JointIntensity jointIntensity : person.getJointIntensities()) {
-                jointIntensity.setPerson(person);
+            for (JointIntensity jointIntensity : user.getJointIntensities()) {
+                jointIntensity.setUser(user);
             }
 
-            return new PersonDTO(personRepository.save(person));
+            return new UserDTO(userRepository.save(user));
         } catch (Exception e) {
             throw new RuntimeException("Unable to create person", e);
         }
     }
 
-    public PersonDTO update(Long id, PersonDTO personDTO) {
-        Person person = new Person(personDTO);
-        personRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Could not find the person with id " + id));
+    public UserDTO update(Long id, UserDTO userDTO) {
+        User user = new User(userDTO);
+        userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find the user with id " + id));
         try {
-            person.setId(id);
-            return new PersonDTO(personRepository.save(person));
+            user.setId(id);
+            return new UserDTO(userRepository.save(user));
         } catch (Exception e) {
-            throw new RuntimeException("Unable to update person", e);
+            throw new RuntimeException("Unable to update user", e);
         }
     }
 
     public void delete(Long id) {
-        if (!personRepository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new RuntimeException("Could not find the person with id " + id);
         }
         try {
-            personRepository.deleteById(id);
+            userRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Unable to delete person", e);
         }
     }
 
-    public List<PersonDTO> findAll() {
+    public List<UserDTO> findAll() {
         try {
-            return personRepository.findAll()
+            return userRepository.findAll()
                     .stream()
-                    .map(PersonDTO::new)
+                    .map(UserDTO::new)
                     .toList();
         } catch (Exception e) {
             throw new RuntimeException("Unable to reach data", e);
         }
     }
 
-    public PersonDTO findById(Long id) {
+    public UserDTO findById(Long id) {
         try {
-            return personRepository.findById(id)
-                    .map(PersonDTO::new)
+            return userRepository.findById(id)
+                    .map(UserDTO::new)
                     .orElseThrow(() -> new RuntimeException("Could not find the person with id " + id));
 
         } catch (RuntimeException e) {
@@ -76,10 +76,10 @@ public class PersonService {
         }
     }
 
-    public PersonDTO findByEmail(String email) {
+    public UserDTO findByEmail(String email) {
         try {
-            return personRepository.findByEmail(email)
-                    .map(PersonDTO::new)
+            return userRepository.findByEmail(email)
+                    .map(UserDTO::new)
                     .orElseThrow(() -> new RuntimeException("Could not find the person with email " + email));
 
         } catch (RuntimeException e) {

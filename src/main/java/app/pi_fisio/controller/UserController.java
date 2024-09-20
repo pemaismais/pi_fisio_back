@@ -1,7 +1,7 @@
 package app.pi_fisio.controller;
 
-import app.pi_fisio.dto.PersonDTO;
-import app.pi_fisio.service.PersonService;
+import app.pi_fisio.dto.UserDTO;
+import app.pi_fisio.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +12,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/person")
-public class PersonController {
+public class UserController {
 
     @Autowired
-    PersonService personService;
+    UserService userService;
 
     // create, delete e update do person tem que ter uma key/hash
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PersonDTO personDTO){
+    public ResponseEntity<?> create(@RequestBody UserDTO userDTO){
         try {
-            PersonDTO response = personService.create(personDTO);
+            UserDTO response = userService.create(userDTO);
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -38,9 +38,9 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody PersonDTO personDTO) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         try{
-            return ResponseEntity.ok(personService.update(id, personDTO));
+            return ResponseEntity.ok(userService.update(id, userDTO));
         }catch(RuntimeException err){
             return ResponseEntity.badRequest().body(err.getMessage());
         }
@@ -52,8 +52,8 @@ public class PersonController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
         try{
-            personService.delete(id);
-            return ResponseEntity.ok("Person with the id: " + id +" has been deleted!");
+            userService.delete(id);
+            return ResponseEntity.ok("User with the id: " + id +" has been deleted!");
         }catch(RuntimeException err){
             return ResponseEntity.badRequest().body(err.getMessage());
         }
@@ -65,7 +65,7 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPersonById(@PathVariable Long id){
         try {
-            PersonDTO response = personService.findById(id);
+            UserDTO response = userService.findById(id);
             return ResponseEntity.ok(response);
         }catch(RuntimeException err){
             return ResponseEntity.badRequest().body(err.getMessage());
@@ -78,7 +78,7 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<?> getAll(){
         try {
-            List<PersonDTO> response = personService.findAll();
+            List<UserDTO> response = userService.findAll();
             return ResponseEntity.ok(response);
         }catch(RuntimeException err){
             return ResponseEntity.badRequest().body(err.getMessage());

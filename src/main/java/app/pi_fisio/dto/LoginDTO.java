@@ -1,4 +1,4 @@
-package app.pi_fisio.auth;
+package app.pi_fisio.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class LoginRequest {
+public class LoginDTO {
     private String idToken;
 }
