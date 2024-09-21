@@ -39,8 +39,6 @@ public class SecurityManager {
 
     @Bean
     public UserDetailsService userDetailsService() {
-//        return username -> loginRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }

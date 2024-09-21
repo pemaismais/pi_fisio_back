@@ -1,7 +1,8 @@
 //AuthenticationService.java
 package app.pi_fisio.service;
 
-import app.pi_fisio.config.JwtServiceGenerator;
+import app.pi_fisio.config.JwtConfig;
+import app.pi_fisio.dto.TokenResponseDTO;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.entity.UserRole;
 import app.pi_fisio.repository.UserRepository;
@@ -12,6 +13,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +22,12 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class LoginService {
+public class AuthService {
     @Value("${google.client-id}")
     private String googleClientId;
 
     @Autowired
-    private JwtServiceGenerator jwtService;
+    private JwtService jwtService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -32,7 +35,7 @@ public class LoginService {
     @Autowired
     UserRepository userRepository;
 
-    public String loginWithGoogle(String idTokenString) throws Exception {
+    public TokenResponseDTO authWithGoogle(String idTokenString) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
                 .build();
@@ -48,10 +51,13 @@ public class LoginService {
             String name = (String) payload.get("name");
 
             // Use or store profile information
-            Optional<User> optionalPerson = userRepository.findByEmail(email);
-            if (optionalPerson.isPresent()) {
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isPresent()) {
                 // Se encontrado no banco de dados
-                return jwtService.generateToken(optionalPerson.get());
+                return TokenResponseDTO.builder()
+                        .accessToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenExpiration()))
+                        .refreshToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenRefreshExpiration()))
+                        .build();
             } else {
                 // Se não encontrado no banco de dados
                 User user = User.builder()
@@ -61,12 +67,31 @@ public class LoginService {
                         .role(UserRole.USER)
                         .build();
                 userRepository.save(user);
-                return jwtService.generateToken(user);
+                return TokenResponseDTO.builder()
+                        .accessToken(jwtService.generateToken(user, JwtConfig.getTokenExpiration()))
+                        .refreshToken(jwtService.generateToken(user, JwtConfig.getTokenRefreshExpiration()))
+                        .build();
             }
 
         } else {
             throw new RuntimeException("Invalid ID token.");
         }
+    }
+
+    public TokenResponseDTO getRefreshToken(String refreshToken){
+        String userlogin = jwtService.validateToken(refreshToken);
+        Optional<User> optionalUser = userRepository.findByEmail(userlogin);
+
+        if(optionalUser.isEmpty()){
+            throw new RuntimeException();
+        }
+        var authentication = new UsernamePasswordAuthenticationToken(optionalUser.get(), null, optionalUser.get().getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return TokenResponseDTO.builder()
+                .accessToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenExpiration()))
+                .refreshToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenRefreshExpiration()))
+                .build();
     }
 
 }

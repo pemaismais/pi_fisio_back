@@ -1,6 +1,5 @@
 package app.pi_fisio.config;
 
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +7,9 @@ import org.springframework.stereotype.Component;
 public class JwtConfig {
 
     //Parâmetros para geração do token
-    public static String secretKey;
-    public static final SignatureAlgorithm ALGORITMO_ASSINATURA = SignatureAlgorithm.HS256;
-    public static final int HORAS_EXPIRACAO_TOKEN = 1;
+    private static String secretKey;
+    public static int tokenExpiration;
+    public static int tokenRefreshExpiration;
 
     @Value("${jwt-client}")
     public void setSecretKey(String secretKey) {
@@ -18,6 +17,24 @@ public class JwtConfig {
     }
 
     public static String getSecretKey() {
-        return secretKey; // Método para acessar a variável estática
+        return secretKey;
+    }
+
+    @Value("${jwt-token-expiration}")
+    public void setTokenExpiration(int tokenExpiration) {
+        JwtConfig.tokenExpiration = tokenExpiration;
+    }
+
+    public static int getTokenExpiration() {
+        return tokenExpiration;
+    }
+
+    @Value("${jwt-refresh-token-expiration}")
+    public void setTokenRefreshExpiration(int tokenRefreshExpiration) {
+        JwtConfig.tokenRefreshExpiration = tokenRefreshExpiration;
+    }
+
+    public static int getTokenRefreshExpiration() {
+        return tokenRefreshExpiration;
     }
 }
