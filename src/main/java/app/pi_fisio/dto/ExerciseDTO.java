@@ -2,8 +2,8 @@ package app.pi_fisio.dto;
 
 
 import app.pi_fisio.entity.Exercise;
-import app.pi_fisio.entity.Joint;
 import app.pi_fisio.entity.Intensity;
+import app.pi_fisio.entity.Joint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
