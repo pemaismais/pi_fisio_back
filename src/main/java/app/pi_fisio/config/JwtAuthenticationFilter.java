@@ -5,6 +5,7 @@ package app.pi_fisio.config;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.repository.UserRepository;
 import app.pi_fisio.service.JwtService;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, TokenExpiredException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userLogin;

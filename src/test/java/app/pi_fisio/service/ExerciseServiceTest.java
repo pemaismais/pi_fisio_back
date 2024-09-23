@@ -50,14 +50,14 @@ public class ExerciseServiceTest {
         List<Exercise> kneeMediumExercises = List.of(exercise03);
 
         Mockito.when(exerciseRepository.findByJointAndIntensity(Joint.SHOULDER,Intensity.HIGH))
-                .thenReturn(shoulderHighExercises);
+                .thenReturn(Optional.of(shoulderHighExercises));
 
         Mockito.when(exerciseRepository.findByJointAndIntensity(Joint.KNEE,Intensity.MEDIUM))
-                        .thenReturn(kneeMediumExercises);
+                        .thenReturn(Optional.of(kneeMediumExercises));
     }
 
     @Test
-    void findByPerson001(){
+    void findByPerson001() throws Exception {
         List<ExerciseDTO> response = exerciseService.findByPerson(1L);
 
         Assertions.assertEquals(3 , response.size());

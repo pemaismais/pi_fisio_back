@@ -5,6 +5,8 @@ import app.pi_fisio.config.JwtConfig;
 import app.pi_fisio.dto.TokenResponseDTO;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.entity.UserRole;
+import app.pi_fisio.infra.exception.InvalidGoogleTokenException;
+import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -29,11 +31,9 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     public TokenResponseDTO authWithGoogle(String idTokenString) throws Exception {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
@@ -42,56 +42,51 @@ public class AuthService {
 
         // Verifica o token ID
         GoogleIdToken idToken = verifier.verify(idTokenString);
-
-        if (idToken != null) {
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            // Get profile information from payload
-            String userId = payload.getSubject();
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
-
-            // Use or store profile information
-            Optional<User> optionalUser = userRepository.findByEmail(email);
-            if (optionalUser.isPresent()) {
-                // Se encontrado no banco de dados
-                return TokenResponseDTO.builder()
-                        .accessToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenExpiration()))
-                        .refreshToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenRefreshExpiration()))
-                        .build();
-            } else {
-                // Se não encontrado no banco de dados
-                User user = User.builder()
-                        .userId(passwordEncoder.encode(userId))
-                        .email(email)
-                        .name(name)
-                        .role(UserRole.USER)
-                        .build();
-                userRepository.save(user);
-                return TokenResponseDTO.builder()
-                        .accessToken(jwtService.generateToken(user, JwtConfig.getTokenExpiration()))
-                        .refreshToken(jwtService.generateToken(user, JwtConfig.getTokenRefreshExpiration()))
-                        .build();
-            }
-
-        } else {
-            throw new RuntimeException("Invalid ID token.");
+        if (idToken == null) {
+            throw new InvalidGoogleTokenException("Invalid Google ID Token");
         }
+        // Get profile information from payload
+        GoogleIdToken.Payload payload = idToken.getPayload();
+        String userId = payload.getSubject();
+        String email = payload.getEmail();
+        String name = (String) payload.get("name");
+
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> createUser(userId, email, name));
+
+        return createTokenResponse(user);
     }
 
-    public TokenResponseDTO getRefreshToken(String refreshToken){
-        String userlogin = jwtService.validateToken(refreshToken);
-        Optional<User> optionalUser = userRepository.findByEmail(userlogin);
+    public TokenResponseDTO getRefreshToken(String refreshToken) throws Exception {
+        String userLogin = jwtService.validateToken(refreshToken);
+        Optional<User> optionalUser = userRepository.findByEmail(userLogin);
 
-        if(optionalUser.isEmpty()){
-            throw new RuntimeException();
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
         }
+
         var authentication = new UsernamePasswordAuthenticationToken(optionalUser.get(), null, optionalUser.get().getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return TokenResponseDTO.builder()
-                .accessToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenExpiration()))
-                .refreshToken(jwtService.generateToken(optionalUser.get(), JwtConfig.getTokenRefreshExpiration()))
-                .build();
+        return createTokenResponse(optionalUser.get());
+
     }
 
+    private User createUser(String userId, String email, String name) {
+        User user = User.builder()
+                .userId(passwordEncoder.encode(userId))
+                .email(email)
+                .name(name)
+                .role(UserRole.USER)
+                .build();
+        userRepository.save(user);
+        return user;
+    }
+
+    private TokenResponseDTO createTokenResponse(User user) {
+        return TokenResponseDTO.builder()
+                .accessToken(jwtService.generateToken(user, JwtConfig.getTokenExpiration()))
+                .refreshToken(jwtService.generateToken(user, JwtConfig.getTokenRefreshExpiration()))
+                .build();
+    }
 }

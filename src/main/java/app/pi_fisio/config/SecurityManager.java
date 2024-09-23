@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityManager {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -22,7 +23,6 @@ public class SecurityManager {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -42,6 +42,4 @@ public class SecurityManager {
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
-
-
 }

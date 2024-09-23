@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ExerciseRepository extends JpaRepository<Exercise,Long> {
+public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     @Query("SELECT e FROM Exercise e WHERE e.joint = :joint AND e.intensity = :intensity")
-    public List<Exercise> findByJointAndIntensity(Joint joint, Intensity intensity);
+    public Optional<List<Exercise> > findByJointAndIntensity(Joint joint, Intensity intensity);
 }
