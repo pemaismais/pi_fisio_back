@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
-    @Value("${google.client-id}")
+    @Value("${google.client.id}")
     private String googleClientId;
 
     @Autowired
