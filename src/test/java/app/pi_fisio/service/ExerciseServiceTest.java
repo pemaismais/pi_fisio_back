@@ -3,7 +3,7 @@ package app.pi_fisio.service;
 import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.entity.*;
 import app.pi_fisio.repository.ExerciseRepository;
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @SpringBootTest
 public class ExerciseServiceTest {
@@ -24,7 +22,7 @@ public class ExerciseServiceTest {
     ExerciseService exerciseService;
 
     @MockBean
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
     @MockBean
     ExerciseRepository exerciseRepository;
@@ -32,16 +30,16 @@ public class ExerciseServiceTest {
     @BeforeEach
     void setup(){
         // Pessoa
-        Person person01 = new Person();
-        person01.setId(1L);
+        User user01 = new User();
+        user01.setId(1L);
         List<JointIntensity> jointIntensities = List.of(
-                new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, person01),
-                new JointIntensity(1L, Joint.KNEE, Intensity.MEDIUM, person01)
+                new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, user01),
+                new JointIntensity(1L, Joint.KNEE, Intensity.MEDIUM, user01)
         );
-        person01.setJointIntensities(jointIntensities);
+        user01.setJointIntensities(jointIntensities);
 
-        Mockito.when(personRepository.findById(1L))
-                .thenReturn(Optional.of(person01));
+        Mockito.when(userRepository.findById(1L))
+                .thenReturn(Optional.of(user01));
 
         // Exercicios
         Exercise exercise01 = new Exercise(1L, "Exercise 01","Exercise 01 description", "3x", "https://videoUrl.com", Joint.SHOULDER, Intensity.HIGH);
@@ -52,14 +50,14 @@ public class ExerciseServiceTest {
         List<Exercise> kneeMediumExercises = List.of(exercise03);
 
         Mockito.when(exerciseRepository.findByJointAndIntensity(Joint.SHOULDER,Intensity.HIGH))
-                .thenReturn(shoulderHighExercises);
+                .thenReturn(Optional.of(shoulderHighExercises));
 
         Mockito.when(exerciseRepository.findByJointAndIntensity(Joint.KNEE,Intensity.MEDIUM))
-                        .thenReturn(kneeMediumExercises);
+                        .thenReturn(Optional.of(kneeMediumExercises));
     }
 
     @Test
-    void findByPerson001(){
+    void findByPerson001() throws Exception {
         List<ExerciseDTO> response = exerciseService.findByPerson(1L);
 
         Assertions.assertEquals(3 , response.size());

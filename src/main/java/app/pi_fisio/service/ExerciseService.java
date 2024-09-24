@@ -2,8 +2,11 @@ package app.pi_fisio.service;
 
 import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.entity.*;
+import app.pi_fisio.infra.exception.ExerciseNotFoundException;
+import app.pi_fisio.infra.exception.NoJointIntensitiesException;
+import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.ExerciseRepository;
-import app.pi_fisio.repository.PersonRepository;
+import app.pi_fisio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,98 +21,64 @@ public class ExerciseService {
     @Autowired
     ExerciseRepository exerciseRepository;
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
-    public ExerciseDTO create(ExerciseDTO exerciseDTO) {
-        try {
-            Exercise exercise = new Exercise(exerciseDTO);
-            return new ExerciseDTO(exerciseRepository.save(exercise));
-        }catch(Exception e){
-            throw new RuntimeException("Unable to create exercise", e);
-        }
+    public ExerciseDTO create(ExerciseDTO exerciseDTO) throws Exception {
+        Exercise exercise = new Exercise(exerciseDTO);
+        return new ExerciseDTO(exerciseRepository.save(exercise));
     }
 
-    public ExerciseDTO update(Long id,ExerciseDTO exerciseDTO){
+    public ExerciseDTO update(Long id, ExerciseDTO exerciseDTO) throws Exception{
         Exercise exercise = new Exercise(exerciseDTO);
         exerciseRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Could not find the exercise with id " + id));
-        try {
-            exercise.setId(id);
-           return new ExerciseDTO(exerciseRepository.save(exercise));
-        }catch(Exception e){
-            throw new RuntimeException("Unable to update exercise", e);
-        }
+                .orElseThrow(ExerciseNotFoundException::new);
+
+        exercise.setId(id);
+        return new ExerciseDTO(exerciseRepository.save(exercise));
     }
 
-    public void delete(Long id){
-        if (!exerciseRepository.existsById(id)) {
-            throw new NoSuchElementException("Could not find the exercise with id " + id);
+    public void delete(Long id)  {
+        if (!exerciseRepository.existsById(id)){
+            throw new ExerciseNotFoundException();
         }
-        try{
-            exerciseRepository.deleteById(id);
-        }catch(Exception e){
-            throw new RuntimeException("Unable to delete exercise", e);
-        }
+        exerciseRepository.deleteById(id);
     }
 
-    public List<ExerciseDTO> findAll(){
-        try{
-            return exerciseRepository.findAll()
-                    .stream()
-                    .map(ExerciseDTO::new)
-                    .toList();
-        }catch(Exception e){
-            throw new RuntimeException("Unable to reach exercises", e);
-        }
+    public List<ExerciseDTO> findAll() {
+        return exerciseRepository.findAll()
+                .stream()
+                .map(ExerciseDTO::new)
+                .toList();
     }
 
-    public ExerciseDTO findById(Long id){
-        try{
-            return exerciseRepository.findById(id)
-                    .map(ExerciseDTO::new)
-                    .orElseThrow(() -> new NoSuchElementException("Could not find the exercise with id " + id));
-
-        }catch(RuntimeException e){
-            throw e;
-        }
-        catch(Exception e){
-            throw new RuntimeException("Unable to reach exercise", e);
-        }
+    public ExerciseDTO findById(Long id) throws ExerciseNotFoundException {
+        return exerciseRepository.findById(id)
+                .map(ExerciseDTO::new)
+                .orElseThrow(ExerciseNotFoundException::new);
+    }
+    public List<ExerciseDTO> findByJointAndIntensity(Joint joint, Intensity intensity) throws Exception {
+        return exerciseRepository.findByJointAndIntensity(joint, intensity)
+                .map(exercises -> exercises.stream()
+                        .map(ExerciseDTO::new)
+                        .toList())
+                .orElseThrow(ExerciseNotFoundException::new);
     }
 
-    public List<ExerciseDTO> findByJointAndIntensity(Joint joint, Intensity intensity){
-        try{
-            return exerciseRepository.findByJointAndIntensity(joint,intensity)
-                    .stream()
-                    .map(ExerciseDTO::new)
-                    .toList();
-        }catch(Exception e){
-            throw new RuntimeException("Unable to reach exercises", e);
-        }
-    }
+    public List<ExerciseDTO> findByPerson(Long personId) throws Exception {
+        User user = userRepository.findById(personId)
+                .orElseThrow(() -> new UserNotFoundException("id", personId.toString()));
 
+        List<JointIntensity> jointIntensities = user.getJointIntensities();
 
-    public List<ExerciseDTO> findByPerson(Long personId) {
-        // Buscar a pessoa pelo ID e lançar exceção se não for encontrada
-        Person person = personRepository.findById(personId)
-                .orElseThrow(() -> new NoSuchElementException("Could not find the person with id " + personId));
-
-        List<JointIntensity> jointIntensities = person.getJointIntensities();
-
-        // Verificar se a lista de intensidades articulares está vazia
         if (jointIntensities == null || jointIntensities.isEmpty()) {
-            throw new NoSuchElementException("Person with no jointIntensities.");
+            throw new NoJointIntensitiesException("User has no joint intensities.");
         }
 
-        // Coletar todos os exercícios correspondentes às intensidades articulares
-        return jointIntensities.stream()
-                .flatMap(jointIntensity ->
-                        exerciseRepository.findByJointAndIntensity(jointIntensity.getJoint(), jointIntensity.getIntensity())
-                                .stream()
-                                .map(ExerciseDTO::new)
-                )
-                .collect(Collectors.toList());
+        List<ExerciseDTO> list = new ArrayList<>();
+        for (JointIntensity jointIntensity : jointIntensities) {
+            list.addAll(findByJointAndIntensity(jointIntensity.getJoint(), jointIntensity.getIntensity()));
+        }
+        return list;
     }
-
 
 }
