@@ -11,7 +11,7 @@ public class JwtConfig {
     public static int tokenExpiration;
     public static int tokenRefreshExpiration;
 
-    @Value("${jwt-client}")
+    @Value("${jwt.secret}")
     public void setSecretKey(String secretKey) {
         JwtConfig.secretKey = secretKey;
     }
@@ -20,7 +20,7 @@ public class JwtConfig {
         return secretKey;
     }
 
-    @Value("${jwt-token-expiration}")
+    @Value("${jwt.token.expiration}")
     public void setTokenExpiration(int tokenExpiration) {
         JwtConfig.tokenExpiration = tokenExpiration;
     }
@@ -29,7 +29,7 @@ public class JwtConfig {
         return tokenExpiration;
     }
 
-    @Value("${jwt-refresh-token-expiration}")
+    @Value("${jwt.refresh.token.expiration}")
     public void setTokenRefreshExpiration(int tokenRefreshExpiration) {
         JwtConfig.tokenRefreshExpiration = tokenRefreshExpiration;
     }
