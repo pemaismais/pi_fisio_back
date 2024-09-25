@@ -8,7 +8,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -30,7 +29,7 @@ public class JwtService {
                 .sign(Algorithm.HMAC256(JwtConfig.getSecretKey()));
     }
 
-    private Instant generateExpirationDate(Integer expiration) {
+    public Instant generateExpirationDate(Integer expiration) {
         return LocalDateTime.now()
                 .plusHours(expiration)
                 .toInstant(ZoneOffset.of("-03:00"));
