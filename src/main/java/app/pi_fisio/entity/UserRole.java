@@ -1,5 +1,7 @@
 package app.pi_fisio.entity;
+import lombok.*;
 
+@ToString
 public enum UserRole {
     USER("user"),
     ADMIN("admin");
