@@ -38,12 +38,19 @@ public class UserController {
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
         return ResponseEntity.ok(userService.update(id, userDTO));
     }
 
     @DeleteMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
+
+       if (id == null || id.toString().isEmpty()){
+           return ResponseEntity.badRequest().body("ID não pode ser inválido");
+       }
         userService.delete(id);
         return ResponseEntity.ok("User with the id: " + id + " has been deleted!");
     }
@@ -51,6 +58,9 @@ public class UserController {
     @GetMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getPersonById(@PathVariable Long id) {
+        if (id == null || id.toString().isEmpty()){
+            return ResponseEntity.badRequest().body(null);
+        }
         return ResponseEntity.ok(userService.findById(id));
     }
 
