@@ -20,13 +20,19 @@ public class UserController {
     @PostMapping
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
-        UserDTO response = userService.create(userDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(response);
+
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body("E-mail não pode estar vazio.");
+        }
+
+            UserDTO response = userService.create(userDTO);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(response.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(response);
+
     }
 
     @PutMapping("/{id}")
