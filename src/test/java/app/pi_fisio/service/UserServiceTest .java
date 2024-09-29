@@ -157,7 +157,7 @@ class UserServiceTest {
     void findByIdUser(){
         User user1 = User.builder()
                 .id(2L)
-                .name("Fulano de Tal")
+                .name("Fulanos de Tal")
                 .email("fulano@gmail.com")
                 .course("Ingles")
                 .role(UserRole.USER)
