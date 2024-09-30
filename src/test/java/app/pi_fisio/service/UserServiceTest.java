@@ -2,22 +2,20 @@ package app.pi_fisio.service;
 
 import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.entity.*;
+import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 class UserServiceTest {
@@ -33,12 +31,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    void buscarADM(){
         User user1 = User.builder()
                 .id(1L)
                 .name("Jose Aparecido")
@@ -73,7 +67,18 @@ class UserServiceTest {
                 .build();
 
         when(userRepository.findAll()).thenReturn(List.of(user1, user2, user3));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(userRepository.findById(0L)).thenReturn(Optional.empty());
+        when(userRepository.existsById(0L)).thenReturn(false);
+        when(userRepository.findByEmail("email@valido.com")).thenReturn(Optional.of(user1));
+        when(userRepository.findByEmail("email@invalido.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any())).thenReturn(user1);
 
+    }
+
+    @Test
+    void buscarADM() {
         List<User> allUsers = userRepository.findAll();
         List<User> admins = allUsers.stream()
                 .filter(user -> user.getRole() == UserRole.ADMIN)
@@ -84,30 +89,60 @@ class UserServiceTest {
     }
 
     @Test
-    void findAll(){
-        User user1 = User.builder()
-                .id(1L)
-                .name("Jose Aparecido")
-                .email("@gmail.com")
-                .course("Portugues")
+    void findAll() {
+        List<UserDTO> response = userService.findAll();
+        assertNotNull(response);
+        System.out.println(response);
+    }
+
+    @Test
+    void deleteUsers() {
+        // Com id valido
+        assertDoesNotThrow(() -> userService.delete(1L));
+        // Com id invalido
+        assertThrows(UserNotFoundException.class, () -> userService.delete(0L));
+    }
+
+    @Test
+    void findByIdUser() {
+        // Com id valido!
+        UserDTO response = userService.findById(1L);
+        assertNotNull(response);
+        // Com id invalido!
+        assertThrows(UserNotFoundException.class, () -> userService.delete(0L));
+    }
+
+    @Test
+    void findByEmail() {
+        // Com email valido!
+        UserDTO response = userService.findByEmail("email@valido.com");
+        assertNotNull(response);
+        // Com email invalido!
+        assertThrows(UserNotFoundException.class, () -> userService.findByEmail("email@invalido.com"));
+    }
+
+    @Test
+    void update() {
+        UserDTO userdto = UserDTO.builder()
+                .id(3L)
+                .name("Joana ")
+                .email("joana@gmail.com")
+                .course("Ciencias")
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
                         new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
                 .build();
+        // Com id valido!
+        UserDTO response = userService.update(1L, userdto);
+        assertNotNull(response);
+        // Com id invalido!
+        assertThrows(UserNotFoundException.class, () -> userService.update(0L, userdto));
+    }
 
-        User user2 = User.builder()
-                .id(2L)
-                .name("Fulano de Tal")
-                .email("fulano@gmail.com")
-                .course("Ingles")
-                .role(UserRole.USER)
-                .jointIntensities(List.of(
-                        new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
-                        new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
-                .build();
-
-        User user3 = User.builder()
+    @Test
+    void create() {
+        UserDTO userdto = UserDTO.builder()
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
@@ -118,61 +153,8 @@ class UserServiceTest {
                         new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
                 .build();
 
-        when(userRepository.findAll()).thenReturn(List.of(user1, user2, user3));
-        List<User> usersList = userRepository.findAll();
-        System.out.println(usersList);
+        UserDTO response = userService.create(userdto);
+        assertNotNull(response);
     }
-
-    @Test
-    void deleteUsers(){
-        User user1 = User.builder()
-                .id(1L)
-                .name("Jose Aparecido")
-                .email("@gmail.com")
-                .course("Portugues")
-                .role(UserRole.ADMIN)
-                .jointIntensities(List.of(
-                        new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
-                        new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
-                .build();
-
-        User user2 = User.builder()
-                .id(2L)
-                .name("Fulano de Tal")
-                .email("fulano@gmail.com")
-                .course("Ingles")
-                .role(UserRole.USER)
-                .jointIntensities(List.of(
-                        new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
-                        new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
-                .build();
-
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        Assertions.assertThrows(RuntimeException.class, () -> userService.delete(1L));
-        System.out.println("usuário foi deletado");
-    }
-
-    @Test
-    void findByIdUser(){
-        User user1 = User.builder()
-                .id(2L)
-                .name("Fulanos de Tal")
-                .email("fulano@gmail.com")
-                .course("Ingles")
-                .role(UserRole.USER)
-                .jointIntensities(List.of(
-                        new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
-                        new JointIntensity(2L, Joint.KNEE, Intensity.MEDIUM, null)))
-                .build();
-
-        when(userRepository.findById(2l)).thenReturn(Optional.of(user1));
-        Optional<User> Iduser = userRepository.findById(2L);
-        assertTrue(Iduser.isPresent());
-        assertEquals(2L, Iduser.get().getId());
-        System.out.println(Iduser);
-
-    }
-
 
 }
