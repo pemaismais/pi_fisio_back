@@ -3,11 +3,9 @@ package app.pi_fisio.controller;
 import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.entity.Intensity;
 import app.pi_fisio.entity.Joint;
-import app.pi_fisio.infra.exception.ExerciseNotFoundException;
 import app.pi_fisio.service.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

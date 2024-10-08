@@ -3,18 +3,16 @@ package app.pi_fisio.dto;
 import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.entity.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
-
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserDTO {
         private Long id;
         private String name;

@@ -4,8 +4,6 @@ import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,24 +20,37 @@ public class UserController {
     @PostMapping
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
-        UserDTO response = userService.create(userDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(response);
+
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body("E-mail não pode estar vazio.");
+        }
+
+            UserDTO response = userService.create(userDTO);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(response.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(response);
+
     }
 
     @PutMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
         return ResponseEntity.ok(userService.update(id, userDTO));
     }
 
     @DeleteMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
+
+       if (id == null || id.toString().isEmpty()){
+           return ResponseEntity.badRequest().body("ID não pode ser inválido");
+       }
         userService.delete(id);
         return ResponseEntity.ok("User with the id: " + id + " has been deleted!");
     }
@@ -47,6 +58,9 @@ public class UserController {
     @GetMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getPersonById(@PathVariable Long id) {
+        if (id == null || id.toString().isEmpty()){
+            return ResponseEntity.badRequest().body(null);
+        }
         return ResponseEntity.ok(userService.findById(id));
     }
 

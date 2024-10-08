@@ -17,12 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<DefaultErrorMessage> runtimeExceptionHandler(RuntimeException exception){
-//        DefaultErrorMessage defaultErrorMessage = new DefaultErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", exception.getMessage());
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(defaultErrorMessage);
-//    }
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<DefaultErrorMessage> userNotFoundHandler(UserNotFoundException exception) {
         DefaultErrorMessage defaultErrorMessage = new DefaultErrorMessage(HttpStatus.NOT_FOUND.value(), "User not found.", exception.getMessage());
@@ -31,7 +25,6 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ExerciseNotFoundException.class)
     public ResponseEntity<DefaultErrorMessage> exerciseNotFoundHandler(ExerciseNotFoundException exception) {
-        logger.warn("ExerciseNotFoundException: {}" + exception.getMessage());
         DefaultErrorMessage defaultErrorMessage = new DefaultErrorMessage(HttpStatus.NOT_FOUND.value(), "Exercise not found.", exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(defaultErrorMessage);
     }
