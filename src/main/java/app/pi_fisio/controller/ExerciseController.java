@@ -21,7 +21,7 @@ public class ExerciseController {
 
     @PostMapping
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> create(@RequestBody ExerciseDTO exerciseDTO) throws Exception {
+    public ResponseEntity<ExerciseDTO> create(@RequestBody ExerciseDTO exerciseDTO) throws Exception {
         ExerciseDTO response = exerciseService.create(exerciseDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -49,35 +49,28 @@ public class ExerciseController {
 
     @GetMapping("/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getExerciseById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<ExerciseDTO> getExerciseById(@PathVariable Long id) throws Exception {
         ExerciseDTO response = exerciseService.findById(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<ExerciseDTO>> getAll() {
         List<ExerciseDTO> response = exerciseService.findAll();
         return ResponseEntity.ok(response);
     }
 
     // Pegar os exercicios recomendados baseado na Intensidade e Local de dor
     @GetMapping("/findByJointAndIntensity")
-    public ResponseEntity<?> getByJointAndIntensity(@RequestParam Joint joint, @RequestParam Intensity intensity) throws Exception {
-        try {
+    public ResponseEntity<List<ExerciseDTO>> getByJointAndIntensity(@RequestParam Joint joint, @RequestParam Intensity intensity) throws Exception {
             List<ExerciseDTO> response = exerciseService.findByJointAndIntensity(joint, intensity);
             return ResponseEntity.ok(response);
-        } catch (RuntimeException err) {
-            return ResponseEntity.badRequest().body(err.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
     }
 
     // Pegar os exercicios recomendados baseado nas dores de pessoa
     @GetMapping("/getByPerson")
-    public ResponseEntity<?> getByPerson(@RequestParam Long personId) throws Exception {
+    public ResponseEntity<List<ExerciseDTO>> getByPerson(@RequestParam Long personId) throws Exception {
         List<ExerciseDTO> response = exerciseService.findByPerson(personId);
         return ResponseEntity.ok(response);
     }

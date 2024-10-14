@@ -20,9 +20,10 @@ public class JwtService {
     public String generateToken(User userDetails, Integer expiration) throws JWTCreationException {
         return JWT.create()
                 .withClaim("username", userDetails.getUsername())
-                .withClaim("role", userDetails.getRole().toString())
+                .withClaim("role", userDetails.getRole().name())
                 .withClaim("name", userDetails.getName())
                 .withClaim("id", userDetails.getId())
+                .withClaim("picture", userDetails.getPictureUrl())
                 .withIssuer("PI-Fisio")
                 .withSubject(userDetails.getUsername())
                 .withExpiresAt(generateExpirationDate(expiration))

@@ -15,10 +15,11 @@ import java.util.List;
 @Builder
 public class UserDTO {
         private Long id;
+        private String pictureUrl;
         private String name;
         private String email;
         private UserRole role;
-        private String course;
+        private List<String> courses;
         private List<JointIntensity> jointIntensities;
         
         public UserDTO(User user){

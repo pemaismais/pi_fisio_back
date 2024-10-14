@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ class UserServiceTest {
                 .id(1L)
                 .name("Jose Aparecido")
                 .email("@gmail.com")
-                .course("Portugues")
+                .courses(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -48,7 +49,7 @@ class UserServiceTest {
                 .id(2L)
                 .name("Fulano de Tal")
                 .email("fulano@gmail.com")
-                .course("Ingles")
+                .courses(List.of("Portugues"))
                 .role(UserRole.USER)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -59,7 +60,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .course("Ciencias")
+                .courses(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -127,7 +128,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .course("Ciencias")
+                .courses(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -146,7 +147,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .course("Ciencias")
+                .courses(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),

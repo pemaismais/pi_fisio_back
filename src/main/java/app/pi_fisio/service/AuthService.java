@@ -48,10 +48,11 @@ public class AuthService {
         GoogleIdToken.Payload payload = idToken.getPayload();
         String userId = payload.getSubject();
         String email = payload.getEmail();
+        String picture = (String) payload.get("picture");
         String name = (String) payload.get("name");
 
         User user = userRepository.findByEmail(email)
-                .orElseGet(() -> createUser(userId, email, name));
+                .orElseGet(() -> createUser(userId, email, name, picture));
 
         return createTokenResponse(user);
     }
@@ -67,12 +68,13 @@ public class AuthService {
 
     }
 
-    private User createUser(String userId, String email, String name) {
+    private User createUser(String userId, String email, String name, String picture) {
         User user = User.builder()
                 .userId(passwordEncoder.encode(userId))
                 .email(email)
                 .name(name)
                 .role(UserRole.USER)
+                .pictureUrl(picture)
                 .build();
         userRepository.save(user);
         return user;

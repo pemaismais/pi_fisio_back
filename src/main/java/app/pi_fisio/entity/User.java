@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -31,9 +32,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // UserDetails -> password
-    private String userId;
-
     @NotNull
     private String name;
 
@@ -41,8 +39,17 @@ public class User implements UserDetails {
     @NotNull
     // UserDetails -> username
     private String email;
+    // UserDetails -> password
+    private String userId;
+
+    private String pictureUrl;
     private UserRole role;
-    private String course;
+
+    @ElementCollection
+    @CollectionTable(name = "user_courses", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "course")
+    private List<String> courses;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<JointIntensity> jointIntensities;
@@ -52,8 +59,6 @@ public class User implements UserDetails {
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
-
-   
 
     @Override
     public String getPassword() {
