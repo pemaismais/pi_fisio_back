@@ -1,11 +1,16 @@
 package app.pi_fisio.service;
 
+import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.dto.UserDTO;
+import app.pi_fisio.dto.UserPageDTO;
 import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +46,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public List<UserDTO> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserDTO::new)
-                .toList();
+    public UserPageDTO findAll(int page,int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageable);
+        List<UserDTO> users = userPage.get().map(UserDTO::new).toList();
+
+        return new UserPageDTO(users, userPage.getTotalElements(), userPage.getTotalPages());
     }
 
     public UserDTO findById(Long id) {

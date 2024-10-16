@@ -1,7 +1,12 @@
 package app.pi_fisio.controller;
 
+import app.pi_fisio.dto.ExercisePageDTO;
 import app.pi_fisio.dto.UserDTO;
+import app.pi_fisio.dto.UserPageDTO;
 import app.pi_fisio.service.UserService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +71,11 @@ public class UserController {
 
     @GetMapping
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserDTO>> getAll() throws Exception {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<UserPageDTO> getAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive @Max(100) int size
+    ) throws Exception {
+        UserPageDTO userPageDTO = userService.findAll(page,size);
+        return ResponseEntity.ok(userPageDTO);
     }
 }

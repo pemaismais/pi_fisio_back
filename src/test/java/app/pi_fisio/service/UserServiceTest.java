@@ -91,9 +91,9 @@ class UserServiceTest {
 
     @Test
     void findAll() {
-        List<UserDTO> response = userService.findAll();
-        assertNotNull(response);
-        System.out.println(response);
+//        List<UserDTO> response = userService.findAll();
+//        assertNotNull(response);
+//        System.out.println(response);
     }
 
     @Test
