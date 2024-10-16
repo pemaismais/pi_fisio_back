@@ -1,16 +1,25 @@
 package app.pi_fisio.controller;
 
 import app.pi_fisio.dto.ExerciseDTO;
+import app.pi_fisio.dto.ExerciseFilterDTO;
+import app.pi_fisio.dto.ExercisePageDTO;
 import app.pi_fisio.entity.Intensity;
 import app.pi_fisio.entity.Joint;
+import app.pi_fisio.queryfilters.ExerciseQueryFilter;
 import app.pi_fisio.service.ExerciseService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/exercise")
@@ -56,8 +65,12 @@ public class ExerciseController {
 
     @GetMapping
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ExerciseDTO>> getAll() {
-        List<ExerciseDTO> response = exerciseService.findAll();
+    public ResponseEntity<ExercisePageDTO> getAll
+            (@RequestParam(defaultValue = "0") @PositiveOrZero int page,
+             @RequestParam(defaultValue = "10") @Positive @Max(100) int size,
+             @ModelAttribute ExerciseQueryFilter filter){
+
+        ExercisePageDTO response = exerciseService.findAll(page, size, filter);
         return ResponseEntity.ok(response);
     }
 

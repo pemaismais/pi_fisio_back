@@ -1,17 +1,27 @@
 package app.pi_fisio.service;
 
 import app.pi_fisio.dto.ExerciseDTO;
+import app.pi_fisio.dto.ExerciseFilterDTO;
+import app.pi_fisio.dto.ExercisePageDTO;
 import app.pi_fisio.entity.*;
 import app.pi_fisio.infra.exception.ExerciseNotFoundException;
 import app.pi_fisio.infra.exception.NoJointIntensitiesException;
 import app.pi_fisio.infra.exception.UserNotFoundException;
+import app.pi_fisio.queryfilters.ExerciseQueryFilter;
 import app.pi_fisio.repository.ExerciseRepository;
 import app.pi_fisio.repository.UserRepository;
+import app.pi_fisio.specifications.ExerciseSpec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExerciseService {
@@ -42,11 +52,14 @@ public class ExerciseService {
         exerciseRepository.deleteById(id);
     }
 
-    public List<ExerciseDTO> findAll() {
-        return exerciseRepository.findAll()
-                .stream()
-                .map(ExerciseDTO::new)
-                .toList();
+    public ExercisePageDTO findAll(int page, int size, ExerciseQueryFilter filter ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Exercise> exercisePage = exerciseRepository.findAll(filter.toSpecification(), pageable);
+
+//        Page<Exercise> exercisePage = exerciseRepository.findAll(pageable);
+        List<ExerciseDTO> exercises = exercisePage.get().map(ExerciseDTO::new).toList();
+        return new ExercisePageDTO(exercises, exercisePage.getTotalElements(), exercisePage.getTotalPages());
     }
 
     public ExerciseDTO findById(Long id) throws ExerciseNotFoundException {

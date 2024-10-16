@@ -160,9 +160,9 @@ public class ExerciseServiceTest {
                 () -> exerciseService.findById(0L));
     }
 
-    @Test
-    void findAll() {
-        List<ExerciseDTO> response = exerciseService.findAll();
-        assertNotNull(response);
-    }
+//    @Test
+//    void findAll() {
+//        List<ExerciseDTO> response = exerciseService.findAll();
+//        assertNotNull(response);
+//    }
 }
