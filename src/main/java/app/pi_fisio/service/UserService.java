@@ -1,25 +1,34 @@
 package app.pi_fisio.service;
 
 import app.pi_fisio.dto.ExerciseDTO;
+import app.pi_fisio.dto.JointIntensityDTO;
 import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.dto.UserPageDTO;
 import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.UserRepository;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    JwtService jwtService;
 
     public UserDTO create(UserDTO userDTO) {
         User user = new User(userDTO);
@@ -66,5 +75,27 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("email", email));
     }
 
+    public UserDTO updateJointIntensities(List<JointIntensityDTO> jointIntensitiesDTO, String jwt) throws Exception{
+        String email = jwtService.validateToken(jwt);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("email", email));
+
+        List<JointIntensity> jointIntensities = user.getJointIntensities();
+        jointIntensities.clear();
+
+        for (JointIntensityDTO jointIntensityDTO : jointIntensitiesDTO ) {
+            JointIntensity jointIntensity = new JointIntensity(
+                    null,
+                    jointIntensityDTO.joint(),
+                    jointIntensityDTO.intensity(),
+                    user);
+            jointIntensities.add(jointIntensity);
+            jointIntensity.setUser(user);
+        }
+
+        user.setJointIntensities(jointIntensities);
+        return new UserDTO(userRepository.save(user));
+    }
 
 }

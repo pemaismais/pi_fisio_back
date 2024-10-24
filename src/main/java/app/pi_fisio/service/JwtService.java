@@ -8,6 +8,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,11 +33,11 @@ public class JwtService {
 
     public Instant generateExpirationDate(Integer expiration) {
         return LocalDateTime.now()
-                .plusHours(expiration)
+                .plusMinutes(expiration)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 
-    public String validateToken(String token) throws JWTVerificationException {
+    public String validateToken(String token) throws TokenExpiredException {
         return JWT.require(Algorithm.HMAC256(JwtConfig.getSecretKey()))
                 .withIssuer("PI-Fisio")
                 .build()

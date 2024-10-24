@@ -1,8 +1,11 @@
 package app.pi_fisio.controller;
 
 import app.pi_fisio.dto.ExercisePageDTO;
+import app.pi_fisio.dto.JointIntensityDTO;
 import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.dto.UserPageDTO;
+import app.pi_fisio.entity.JointIntensity;
+import app.pi_fisio.entity.User;
 import app.pi_fisio.service.UserService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -77,5 +80,15 @@ public class UserController {
     ) throws Exception {
         UserPageDTO userPageDTO = userService.findAll(page,size);
         return ResponseEntity.ok(userPageDTO);
+    }
+
+    @PutMapping("/updateJointIntensities")
+    public ResponseEntity<UserDTO> updateJointIntensities(
+           @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody List<JointIntensityDTO> jointIntensities)
+            throws Exception{
+        String jwt = authorizationHeader.substring(7);
+        UserDTO response = userService.updateJointIntensities(jointIntensities, jwt);
+        return ResponseEntity.ok(response);
     }
 }

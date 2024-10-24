@@ -50,7 +50,7 @@ public class User implements UserDetails {
     @Column(name = "course")
     private List<String> courses;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user",fetch= FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<JointIntensity> jointIntensities;
 

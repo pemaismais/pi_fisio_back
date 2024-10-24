@@ -5,6 +5,7 @@ package app.pi_fisio.config;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.repository.UserRepository;
 import app.pi_fisio.service.JwtService;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-            throws ServletException, IOException, TokenExpiredException {
+            throws ServletException, IOException, JWTVerificationException{
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userLogin;
@@ -42,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // (UserDetails login => Email)
         userLogin = jwtService.validateToken(jwt);
+
         Optional<User> optionalUser = userRepository.findByEmail(userLogin);
         optionalUser.ifPresent(user -> {
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
