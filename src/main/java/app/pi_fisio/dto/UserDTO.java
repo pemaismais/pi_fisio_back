@@ -6,6 +6,7 @@ import app.pi_fisio.entity.UserRole;
 import lombok.*;
 import org.springframework.beans.BeanUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 @ToString
 @Getter
@@ -18,6 +19,7 @@ public class UserDTO {
         private String pictureUrl;
         private String name;
         private String email;
+        private LocalDate dateOfBirth;
         private UserRole role;
         private String subject;
         private List<String> classes;

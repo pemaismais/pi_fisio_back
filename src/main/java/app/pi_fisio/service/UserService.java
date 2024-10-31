@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -106,7 +107,7 @@ public class UserService {
         patchUser.setRole(null);
         patchUser.setId(null);
 
-        if(!patchUser.getJointIntensities().isEmpty()){
+        if(!ObjectUtils.isEmpty(patchUser.getJointIntensities())){
             List<JointIntensity> currentUserJointIntensities = replaceJointIntensities(currentUser, patchUser);
             patchUser.setJointIntensities(currentUserJointIntensities);
         }
