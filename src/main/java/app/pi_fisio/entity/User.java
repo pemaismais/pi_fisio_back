@@ -44,11 +44,12 @@ public class User implements UserDetails {
 
     private String pictureUrl;
     private UserRole role;
+    private String subject;
 
     @ElementCollection
-    @CollectionTable(name = "user_courses", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "course")
-    private List<String> courses;
+    @CollectionTable(name = "user_classes", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "class")
+    private List<String> classes;
 
     @OneToMany(mappedBy = "user",fetch= FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

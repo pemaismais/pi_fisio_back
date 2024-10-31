@@ -10,13 +10,16 @@ import app.pi_fisio.service.UserService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -91,4 +94,15 @@ public class UserController {
         UserDTO response = userService.updateJointIntensities(jointIntensities, jwt);
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping
+    public ResponseEntity<UserDTO> patchUpdateByJwt(
+            @RequestBody UserDTO userDTO,
+            @RequestHeader("Authorization") String authorizationHeader)
+            throws Exception{
+        String jwt = authorizationHeader.substring(7);
+        UserDTO response = userService.patchUpdate(userDTO, jwt);
+        return ResponseEntity.ok(response);
+    }
+
 }

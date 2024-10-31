@@ -1,25 +1,21 @@
 package app.pi_fisio.service;
 
-import app.pi_fisio.dto.ExerciseDTO;
 import app.pi_fisio.dto.JointIntensityDTO;
 import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.dto.UserPageDTO;
+import app.pi_fisio.entity.Joint;
 import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.User;
+import app.pi_fisio.helper.CopyPropertiesUtil;
 import app.pi_fisio.infra.exception.UserNotFoundException;
 import app.pi_fisio.repository.UserRepository;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -45,6 +41,7 @@ public class UserService {
         }
         User user = new User(userDTO);
         user.setId(id);
+
         return new UserDTO(userRepository.save(user));
     }
 
@@ -98,4 +95,39 @@ public class UserService {
         return new UserDTO(userRepository.save(user));
     }
 
+
+    public UserDTO patchUpdate(UserDTO userDTO,String jwt) throws Exception{
+        String email = jwtService.validateToken(jwt);
+
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("email", email));
+
+        User patchUser = new User(userDTO);
+        patchUser.setRole(null);
+        patchUser.setId(null);
+
+        if(!patchUser.getJointIntensities().isEmpty()){
+            List<JointIntensity> currentUserJointIntensities = replaceJointIntensities(currentUser, patchUser);
+            patchUser.setJointIntensities(currentUserJointIntensities);
+        }
+
+        CopyPropertiesUtil.copyNonNullProperties(patchUser, currentUser);
+
+        return new UserDTO(userRepository.save(currentUser));
+    }
+
+    private static List<JointIntensity> replaceJointIntensities(User currentUser, User patchUser) {
+        List<JointIntensity> currentUserJointIntensities = currentUser.getJointIntensities();
+        currentUserJointIntensities.clear();
+
+        for (JointIntensity jointIntensities : patchUser.getJointIntensities() ) {
+            JointIntensity jointIntensity = new JointIntensity(
+                    null,
+                    jointIntensities.getJoint(),
+                    jointIntensities.getIntensity(),
+                    currentUser);
+            currentUserJointIntensities.add(jointIntensity);
+        }
+        return currentUserJointIntensities;
+    }
 }

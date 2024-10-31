@@ -19,7 +19,8 @@ public class UserDTO {
         private String name;
         private String email;
         private UserRole role;
-        private List<String> courses;
+        private String subject;
+        private List<String> classes;
         private List<JointIntensity> jointIntensities;
         
         public UserDTO(User user){

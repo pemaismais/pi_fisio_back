@@ -38,7 +38,6 @@ class UserServiceTest {
                 .id(1L)
                 .name("Jose Aparecido")
                 .email("@gmail.com")
-                .courses(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -49,7 +48,6 @@ class UserServiceTest {
                 .id(2L)
                 .name("Fulano de Tal")
                 .email("fulano@gmail.com")
-                .courses(List.of("Portugues"))
                 .role(UserRole.USER)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -60,7 +58,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .courses(List.of("Portugues"))
+                .classes(List.of("Portugues"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -128,7 +126,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .courses(List.of("Portugues"))
+                .classes(List.of("3b"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
@@ -147,7 +145,7 @@ class UserServiceTest {
                 .id(3L)
                 .name("Joana ")
                 .email("joana@gmail.com")
-                .courses(List.of("Portugues"))
+                .classes(List.of("3b"))
                 .role(UserRole.ADMIN)
                 .jointIntensities(List.of(
                         new JointIntensity(1L, Joint.SHOULDER, Intensity.HIGH, null),
