@@ -4,6 +4,7 @@ import app.pi_fisio.dto.RequestAuthDTO;
 import app.pi_fisio.dto.RequestRefreshTokenDTO;
 import app.pi_fisio.dto.TokenResponseDTO;
 import app.pi_fisio.service.AuthService;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> authWithGoogle(@RequestBody RequestAuthDTO requestAuthDTO) throws Exception {
         String idTokenString = requestAuthDTO.idToken();
-        return ResponseEntity.ok(authService.authWithGoogle(idTokenString));
+        TokenResponseDTO response = authService.authWithGoogle(idTokenString);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refreshToken")

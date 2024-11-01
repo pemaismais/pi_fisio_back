@@ -100,12 +100,13 @@ public class UserService {
     public UserDTO patchUpdate(UserDTO userDTO,String jwt) throws Exception{
         String email = jwtService.validateToken(jwt);
 
-        User currentUser = userRepository.findByEmail(email)
+        User currentUser = userRepository.findByEmail (email)
                 .orElseThrow(() -> new UserNotFoundException("email", email));
 
         User patchUser = new User(userDTO);
         patchUser.setRole(null);
         patchUser.setId(null);
+        patchUser.setEmail(null);
 
         if(!ObjectUtils.isEmpty(patchUser.getJointIntensities())){
             List<JointIntensity> currentUserJointIntensities = replaceJointIntensities(currentUser, patchUser);
@@ -113,7 +114,7 @@ public class UserService {
         }
 
         CopyPropertiesUtil.copyNonNullProperties(patchUser, currentUser);
-
+        System.out.println(currentUser); // ver se o ID TA AQUI 1
         return new UserDTO(userRepository.save(currentUser));
     }
 

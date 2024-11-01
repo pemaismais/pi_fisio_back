@@ -39,6 +39,7 @@ public class User implements UserDetails {
 
     @Email
     @NotNull
+    @Column(unique = true)
     // UserDetails -> username
     private String email;
     // UserDetails -> password
