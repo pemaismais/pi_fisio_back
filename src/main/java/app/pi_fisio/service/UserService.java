@@ -114,7 +114,6 @@ public class UserService {
         }
 
         CopyPropertiesUtil.copyNonNullProperties(patchUser, currentUser);
-        System.out.println(currentUser); // ver se o ID TA AQUI 1
         return new UserDTO(userRepository.save(currentUser));
     }
 
