@@ -110,7 +110,8 @@ public class UserService {
 
         if(!ObjectUtils.isEmpty(patchUser.getJointIntensities())){
             List<JointIntensity> currentUserJointIntensities = replaceJointIntensities(currentUser, patchUser);
-            patchUser.setJointIntensities(currentUserJointIntensities);
+            currentUser.setJointIntensities(currentUserJointIntensities);
+            patchUser.setJointIntensities(null);
         }
 
         CopyPropertiesUtil.copyNonNullProperties(patchUser, currentUser);
