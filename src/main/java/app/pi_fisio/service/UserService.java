@@ -62,9 +62,17 @@ public class UserService {
     }
 
     public UserDTO findById(Long id) {
+
         return userRepository.findById(id)
                 .map(UserDTO::new)
                 .orElseThrow(() -> new UserNotFoundException("id", id.toString()));
+    }
+    public UserDTO findUserByJwt(String jwt) {
+        String email = jwtService.validateToken(jwt);
+
+        return userRepository.findByEmail(email)
+                .map(UserDTO::new)
+                .orElseThrow(() -> new UserNotFoundException("email", email));
     }
 
     public UserDTO findByEmail(String email) {
@@ -72,30 +80,6 @@ public class UserService {
                 .map(UserDTO::new)
                 .orElseThrow(() -> new UserNotFoundException("email", email));
     }
-
-    public UserDTO updateJointIntensities(List<JointIntensityDTO> jointIntensitiesDTO, String jwt) throws Exception{
-        String email = jwtService.validateToken(jwt);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("email", email));
-
-        List<JointIntensity> jointIntensities = user.getJointIntensities();
-        jointIntensities.clear();
-
-        for (JointIntensityDTO jointIntensityDTO : jointIntensitiesDTO ) {
-            JointIntensity jointIntensity = new JointIntensity(
-                    null,
-                    jointIntensityDTO.joint(),
-                    jointIntensityDTO.intensity(),
-                    user);
-            jointIntensities.add(jointIntensity);
-            jointIntensity.setUser(user);
-        }
-
-        user.setJointIntensities(jointIntensities);
-        return new UserDTO(userRepository.save(user));
-    }
-
 
     public UserDTO patchUpdate(UserDTO userDTO,String jwt) throws Exception{
         String email = jwtService.validateToken(jwt);

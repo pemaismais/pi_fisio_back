@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -67,7 +68,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getPersonById(@PathVariable Long id) {
         if (id == null || id.toString().isEmpty()){
             return ResponseEntity.badRequest().body(null);
@@ -76,23 +77,13 @@ public class UserController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserPageDTO> getAll(
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive @Max(100) int size
     ) throws Exception {
         UserPageDTO userPageDTO = userService.findAll(page,size);
         return ResponseEntity.ok(userPageDTO);
-    }
-
-    @PutMapping("/updateJointIntensities")
-    public ResponseEntity<UserDTO> updateJointIntensities(
-           @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody List<JointIntensityDTO> jointIntensities)
-            throws Exception{
-        String jwt = authorizationHeader.substring(7);
-        UserDTO response = userService.updateJointIntensities(jointIntensities, jwt);
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping
@@ -105,4 +96,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<UserDTO> getUserByJwt(
+            @RequestHeader("Authorization") String authorizationHeader)
+            throws Exception{
+        String jwt = authorizationHeader.substring(7);
+        UserDTO response = userService.findUserByJwt(jwt);
+        return ResponseEntity.ok(response);
+    }
 }
