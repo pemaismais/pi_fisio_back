@@ -1,9 +1,9 @@
 package app.pi_fisio.controller;
 
 
-import app.pi_fisio.dto.TokenResponseDTO;
+import app.pi_fisio.auth.TokenResponseDTO;
 import app.pi_fisio.infra.exception.InvalidGoogleTokenException;
-import app.pi_fisio.service.AuthService;
+import app.pi_fisio.auth.AuthService;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

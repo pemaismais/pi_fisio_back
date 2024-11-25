@@ -1,4 +1,4 @@
-package app.pi_fisio.service;
+package app.pi_fisio.auth;
 
 //JwtService.java
 

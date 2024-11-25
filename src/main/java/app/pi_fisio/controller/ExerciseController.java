@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +30,7 @@ public class ExerciseController {
     ExerciseService exerciseService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ExerciseDTO> create(@RequestBody ExerciseDTO exerciseDTO) throws Exception {
         ExerciseDTO response = exerciseService.create(exerciseDTO);
         URI location = ServletUriComponentsBuilder
@@ -42,7 +43,7 @@ public class ExerciseController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ExerciseDTO exerciseDTO) throws Exception {
         exerciseService.update(id, exerciseDTO);
         return ResponseEntity.ok("Exercise with the id: " + id + " has been updated!");
@@ -50,7 +51,7 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         exerciseService.delete(id);
         return ResponseEntity.ok("Exercise with the id: " + id + " has been deleted!");

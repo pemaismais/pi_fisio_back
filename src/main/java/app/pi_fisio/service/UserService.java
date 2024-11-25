@@ -1,9 +1,8 @@
 package app.pi_fisio.service;
 
-import app.pi_fisio.dto.JointIntensityDTO;
+import app.pi_fisio.auth.JwtService;
 import app.pi_fisio.dto.UserDTO;
 import app.pi_fisio.dto.UserPageDTO;
-import app.pi_fisio.entity.Joint;
 import app.pi_fisio.entity.JointIntensity;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.helper.CopyPropertiesUtil;

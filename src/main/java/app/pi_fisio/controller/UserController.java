@@ -30,7 +30,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
 
         if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body(null);
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
 
        if (id == null || id.toString().isEmpty()){

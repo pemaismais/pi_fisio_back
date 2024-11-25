@@ -1,8 +1,7 @@
 //AuthenticationService.java
-package app.pi_fisio.service;
+package app.pi_fisio.auth;
 
 import app.pi_fisio.config.JwtConfig;
-import app.pi_fisio.dto.TokenResponseDTO;
 import app.pi_fisio.entity.User;
 import app.pi_fisio.entity.UserRole;
 import app.pi_fisio.infra.exception.InvalidGoogleTokenException;

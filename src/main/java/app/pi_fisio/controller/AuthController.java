@@ -1,10 +1,9 @@
 package app.pi_fisio.controller;
 
-import app.pi_fisio.dto.RequestAuthDTO;
-import app.pi_fisio.dto.RequestRefreshTokenDTO;
-import app.pi_fisio.dto.TokenResponseDTO;
-import app.pi_fisio.service.AuthService;
-import org.antlr.v4.runtime.Token;
+import app.pi_fisio.auth.RequestAuthDTO;
+import app.pi_fisio.auth.RequestRefreshTokenDTO;
+import app.pi_fisio.auth.TokenResponseDTO;
+import app.pi_fisio.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
