@@ -75,9 +75,9 @@ public class ExerciseService {
                 .orElseThrow(ExerciseNotFoundException::new);
     }
 
-    public List<ExerciseDTO> findByPerson(Long personId) throws Exception {
-        User user = userRepository.findById(personId)
-                .orElseThrow(() -> new UserNotFoundException("id", personId.toString()));
+    public List<ExerciseDTO> findByUser(Long userId) throws Exception {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("id", userId.toString()));
 
         List<JointIntensity> jointIntensities = user.getJointIntensities();
 

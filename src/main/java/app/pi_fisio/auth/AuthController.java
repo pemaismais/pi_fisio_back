@@ -1,4 +1,4 @@
-package app.pi_fisio.controller;
+package app.pi_fisio.auth;
 
 import app.pi_fisio.auth.RequestAuthDTO;
 import app.pi_fisio.auth.RequestRefreshTokenDTO;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
