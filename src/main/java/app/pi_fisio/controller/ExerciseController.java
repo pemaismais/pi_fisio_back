@@ -83,9 +83,9 @@ public class ExerciseController {
     }
 
     // Pegar os exercicios recomendados baseado nas dores de pessoa
-    @GetMapping("/getByPerson")
-    public ResponseEntity<List<ExerciseDTO>> getByPerson(@RequestParam Long personId) throws Exception {
-        List<ExerciseDTO> response = exerciseService.findByPerson(personId);
+    @GetMapping("/getByUser")
+    public ResponseEntity<List<ExerciseDTO>> getByUser(@RequestParam Long userId) throws Exception {
+        List<ExerciseDTO> response = exerciseService.findByUser(userId);
         return ResponseEntity.ok(response);
     }
 }
