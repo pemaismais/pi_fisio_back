@@ -63,6 +63,7 @@ O projeto segue a estrutura MVC (Model-View-Controller).
 - **GET `/api/user`**: Lista de usuários .
 - **GET `/api/user/info`**: Perfil do usuário autenticado.
 - **PATCH `/api/user`**: Atualizar informações do usuário autenticado.
---- 
+
+---
 ## [Front-end desenvolvido em Angular](https://github.com/allandomini/PI_fisio_front)
 
