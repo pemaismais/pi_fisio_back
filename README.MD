@@ -1,4 +1,4 @@
-# Projeto Backend - API REST para Gestão de Exercícios Fisioterapêuticos
+# Projeto Backend - API REST para Gestão de Exercícios Fisioterapêuticos **LER & DORT**
 
 Este projeto é uma API REST desenvolvida em Java Spring, com o objetivo de auxiliar professores do Ensino Médio a lidar com dores e desconfortos relacionados a Lesões por Esforços Repetitivos (LER) e Distúrbios Osteomusculares Relacionados ao Trabalho (DORT). O sistema oferece exercícios específicos para fortalecimento muscular, alongamento e melhoria da mobilidade, baseados nas articulações e intensidade de dor relatadas pelo usuário.
 
